@@ -27,6 +27,9 @@ prep_and_check_simulations_to_rcpp <- function(
   # prep terms
   trms <- attr(terms(formula), "term.labels")
   all_terms <- unique(do.call(c, strsplit(trms, ":")))
+  #Drop the stratum term
+  trms <- trms[which(trms != "strata(step_id_)")]
+  all_terms <- all_terms[which(all_terms != "strata(step_id_)")]
 
   data_names <- c("sl_", "log_sl_", "cos_ta_")
   other.vars_indicator <- c(0, 0)
