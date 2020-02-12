@@ -178,6 +178,51 @@ dispersal_kernel <- function(
   out
 }
 
+#' Create a dispersal kernel from a `fit_clogit`
+#'
+#' @param model `[fit_clogit]` A fitted (i)SSF model
+#' @param ... `[any]` Additional objects passed to `dispersal_kernel()`
+#'
+#' @rdname dispersal_kernel
+#'
+#' @export
+dispersal_kernel.fit_clogit <- function(model, ...){
+  #Grab formula
+  formula <- model$model$formula
+  #Grab coefficients
+  coefs <- coef(model$model)
+  #Pass to dispersal_kernel
+  k <- dispersal_kernel(formula = formula, coefs = coefs, ...)
+}
+
+#' Find the center of a raster
+#'
+#' @param r `[Raster*]` A `RasterLayer` or similar which has an `Extent` object
+#'
+#' @export
+raster_center <- function(r){
+  ext <- extent(r)
+  xmean <- mean(c(ext@xmin, ext@xmax))
+  ymean <- mean(c(ext@ymin, ext@ymax))
+  return(c(xmean, ymean))
+}
+
+#' Calculate a maximum distance from a `steps_xy*` object
+#'
+#' @param obj `[steps_xyt, steps_xy]` A `steps_xy*` object from which to extract maximum observed step length
+#' @param fctr `[numeric(1) = 1.5]` Factor by which to increase maximum distance. See details
+#'
+#' @return `numeric` vector of length 1
+#'
+#' @details This function takes a dataset of class `steps_xy*` and returns a
+#' sensible value for the `max.dist` argument of `\link{dispersal_kernel}()`. The
+#' result is given by `max(obj$sl_) * fctr`.
+#' @export
+max_dist <- function(obj, fctr = 1.5){
+  res <- max(obj$sl_) * fctr
+  return(res)
+}
+
 
 #' Simulate a trajectory
 #'

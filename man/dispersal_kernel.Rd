@@ -2,11 +2,14 @@
 % Please edit documentation in R/simulate_movement2.R
 \name{dispersal_kernel}
 \alias{dispersal_kernel}
+\alias{dispersal_kernel.fit_clogit}
 \title{Create a dispersal kernel}
 \usage{
 dispersal_kernel(formula, coefs, habitat = NULL, other.vars = NULL,
   start, max.dist, init.dir = amt::as_rad(45), standardize = TRUE,
   raster = TRUE, stop = 0)
+
+dispersal_kernel.fit_clogit(model, ...)
 }
 \arguments{
 \item{formula}{\code{[formula]} \cr The formula for the dispersal kernel.}
@@ -28,7 +31,13 @@ dispersal_kernel(formula, coefs, habitat = NULL, other.vars = NULL,
 \item{raster}{\code{[logical(1) = TRUE]} \cr Should a \code{RasterLayer} be returned.}
 
 \item{stop}{\code{[integer(1)=1]{0,1}} \cr What happens when the animal steps out of the landscape.}
+
+\item{model}{\code{[fit_clogit]} A fitted (i)SSF model}
+
+\item{...}{\code{[any]} Additional objects passed to \code{dispersal_kernel()}}
 }
 \description{
 Create a dispersal kernel
+
+Create a dispersal kernel from a \code{fit_clogit}
 }
