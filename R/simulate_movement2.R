@@ -8,6 +8,36 @@ get_angle <- function(xy, dir = 0, take_cosine = TRUE) {
   if (take_cosine) cos(ta) else ta
 }
 
+#' Find the center of a raster
+#'
+#' @param r `[Raster*]` A `RasterLayer` or similar which has an `Extent` object
+#'
+#' @return A `numeric` vector of length 2, giving (x, y) coordinates for raster center.
+#'
+#' @export
+raster_center <- function(r){
+  ext <- extent(r)
+  xmean <- mean(c(ext@xmin, ext@xmax))
+  ymean <- mean(c(ext@ymin, ext@ymax))
+  return(c(xmean, ymean))
+}
+
+#' Calculate a maximum distance from a `steps_xy*` object
+#'
+#' @param obj `[steps_xyt, steps_xy]` A `steps_xy*` object from which to extract maximum observed step length
+#' @param fctr `[numeric(1) = 1.5]` Factor by which to increase maximum distance. See details
+#'
+#' @return `numeric` vector of length 1
+#'
+#' @details This function takes a dataset of class `steps_xy*` and returns a
+#' sensible value for the `max.dist` argument of `\link{dispersal_kernel}()`. The
+#' result is given by `max(obj$sl_) * fctr`.
+#' @export
+max_dist <- function(obj, fctr = 1.5){
+  res <- max(obj$sl_) * fctr
+  return(res)
+}
+
 prep_and_check_simulations_to_rcpp <- function(
   formula, coefs, habitat, other.vars = NULL, start, max.dist,
   init.dir = amt::as_rad(45), standardize = TRUE, stop, n = 1
@@ -180,7 +210,8 @@ dispersal_kernel <- function(
 
 #' Create a dispersal kernel from a `fit_clogit`
 #'
-#' @param model `[fit_clogit]` A fitted (i)SSF model
+#' @param model `[fit_clogit]` A fitted (i)SSF model from which to extract
+#' `formula` and `coefs`
 #' @param ... `[any]` Additional objects passed to `dispersal_kernel()`
 #'
 #' @rdname dispersal_kernel
@@ -193,34 +224,6 @@ dispersal_kernel.fit_clogit <- function(model, ...){
   coefs <- coef(model$model)
   #Pass to dispersal_kernel
   k <- dispersal_kernel(formula = formula, coefs = coefs, ...)
-}
-
-#' Find the center of a raster
-#'
-#' @param r `[Raster*]` A `RasterLayer` or similar which has an `Extent` object
-#'
-#' @export
-raster_center <- function(r){
-  ext <- extent(r)
-  xmean <- mean(c(ext@xmin, ext@xmax))
-  ymean <- mean(c(ext@ymin, ext@ymax))
-  return(c(xmean, ymean))
-}
-
-#' Calculate a maximum distance from a `steps_xy*` object
-#'
-#' @param obj `[steps_xyt, steps_xy]` A `steps_xy*` object from which to extract maximum observed step length
-#' @param fctr `[numeric(1) = 1.5]` Factor by which to increase maximum distance. See details
-#'
-#' @return `numeric` vector of length 1
-#'
-#' @details This function takes a dataset of class `steps_xy*` and returns a
-#' sensible value for the `max.dist` argument of `\link{dispersal_kernel}()`. The
-#' result is given by `max(obj$sl_) * fctr`.
-#' @export
-max_dist <- function(obj, fctr = 1.5){
-  res <- max(obj$sl_) * fctr
-  return(res)
 }
 
 
