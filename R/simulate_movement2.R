@@ -176,11 +176,14 @@ dispersal_kernel <- function(
     stop = p$stop
   )
 
+  #Origin will need to be adjusted
+  origin_hab <- c(extent(hab)@xmin, extent(hab)@ymin)
+
   # Return
   kernel <- if (raster) {
     raster::rasterFromXYZ(cbind(
-      k[, 1] * p$res,
-      k[, 2] * p$res,
+      k[, 1] * p$res + origin_hab[1],
+      k[, 2] * p$res + origin_hab[2],
       k[, 3]))
   } else {
     cbind(
